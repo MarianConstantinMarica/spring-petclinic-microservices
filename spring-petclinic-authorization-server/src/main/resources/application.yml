@@ -1,0 +1,26 @@
+server:
+  port: 9000
+
+authorization:
+  url: http://localhost:${server.port}
+  clients:
+    client1:
+      clientId: client1
+      clientSecret: secret1
+    client2:
+      clientId: client2
+      clientSecret: secret2
+    gateway:
+      clientId: gateway
+      clientSecret: secret3
+
+spring:
+  application:
+    name: authorization-server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${authorization.url}
+          jwk-set-uri: ${authorization.url}
+
