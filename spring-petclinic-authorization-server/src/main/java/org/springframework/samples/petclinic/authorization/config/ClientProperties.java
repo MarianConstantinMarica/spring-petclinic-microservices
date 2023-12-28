@@ -10,6 +10,6 @@ import java.util.Set;
 public class ClientProperties {
 
     private String clientId;
-    private String secret;
+    private String clientSecret;
     private Set<String> scopes;
 }

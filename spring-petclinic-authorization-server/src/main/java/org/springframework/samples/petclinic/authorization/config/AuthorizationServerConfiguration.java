@@ -38,7 +38,7 @@ import java.util.UUID;
 @EnableWebSecurity
 public class AuthorizationServerConfiguration {
 
-    private AuthorizationServerClients authorizationServerClients;
+    private final AuthorizationServerClients authorizationServerClients;
 
     public AuthorizationServerConfiguration(AuthorizationServerClients authorizationServerClients) {
         this.authorizationServerClients = authorizationServerClients;
@@ -55,16 +55,16 @@ public class AuthorizationServerConfiguration {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        var clientRepositories = authorizationServerClients.getClients().entrySet().stream().map(
-            client -> RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId(client.getValue().getClientId())
-                .clientSecret("{noop}" + client.getValue().getSecret())
+        var clientRepositories = authorizationServerClients.getClients().values().stream().map(
+            clientProperties -> RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId(clientProperties.getClientId())
+                .clientSecret("{noop}" + clientProperties.getClientSecret())
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scopes(scopes -> {
                     scopes.add(OidcScopes.OPENID);
                     scopes.add(OidcScopes.PROFILE);
-                    scopes.addAll(client.getValue().getScopes());
+                    scopes.addAll(clientProperties.getScopes());
                 }).build()
         ).toList();
         return new InMemoryRegisteredClientRepository(clientRepositories);

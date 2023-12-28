@@ -7,12 +7,18 @@ authorization:
     client1:
       clientId: client1
       clientSecret: secret1
+      scopes:
+        - gateway
     client2:
       clientId: client2
       clientSecret: secret2
+      scopes:
+        - gateway
     gateway:
       clientId: gateway
       clientSecret: secret3
+      scopes:
+        - gateway
 
 spring:
   application:
