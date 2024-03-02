@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.9</version>
+        <version>3.2.0</version>
     </parent>
 
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-petclinic-microservices</artifactId>
-    <version>3.0.9</version>
+    <version>3.2.0</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
@@ -29,7 +29,7 @@
     <properties>
         <java.version>17</java.version>
 
-        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
         <chaos-monkey-spring-boot.version>2.3.10</chaos-monkey-spring-boot.version>
         <jolokia-core.version>1.7.1</jolokia-core.version>
 
@@ -40,8 +40,14 @@
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
         <docker.image.dockerfile.dir>${basedir}</docker.image.dockerfile.dir>
-        <docker.image.dockerize.version>v0.6.1</docker.image.dockerize.version>
+        <!-- podman is also supported -->
         <container.executable>docker</container.executable>
+        <!-- By default, the OCI image is build for the linux/amd64 platform -->
+        <!-- For Apple Silicon M2 Chip you have to change it to the linux/arm64 -->
+        <container.platform>linux/amd64</container.platform>
+        <!-- The -load option is a shortcut for or -output=type=docker -->
+        <!-- Could be changed by the -push option !-->
+        <container.build.extraarg>--load</container.build.extraarg>
     </properties>
 
     <dependencyManagement>
@@ -153,8 +159,9 @@
                                             <argument>ARTIFACT_NAME=${project.build.finalName}</argument>
                                             <argument>--build-arg</argument>
                                             <argument>EXPOSED_PORT=${docker.image.exposed.port}</argument>
-                                            <argument>--build-arg</argument>
-                                            <argument>DOCKERIZE_VERSION=${docker.image.dockerize.version}</argument>
+                                            <argument>--platform</argument>
+                                            <argument>${container.platform}</argument>
+                                            <argument>${container.build.extraarg}</argument>
                                             <argument>-t</argument>
                                             <argument>${docker.image.prefix}/${project.artifactId}</argument>
                                             <argument>${project.build.directory}</argument>
